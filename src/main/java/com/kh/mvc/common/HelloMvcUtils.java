@@ -59,8 +59,13 @@ public class HelloMvcUtils {
 	 * 으로 나눠서 html 제작
 	 * */
 	public static String getPagebar(int cPage, int numPerPage, int totalContent, String url) {
+		
+		//계속 append할거니까 
 		StringBuilder pagebar = new StringBuilder();
+		
 		url += (url.indexOf("?") < 0) ? "?cPage=" : "&cPage=";
+		
+		//이전다음, 실제페이지보다 오바되는거 방지
 		int totalPage = (int) Math.ceil((double)totalContent / numPerPage);
 		int pagebarSize = 5;
 		int pagebarStart = ((cPage - 1) / pagebarSize * pagebarSize) + 1;
@@ -93,6 +98,18 @@ public class HelloMvcUtils {
 			pagebar.append("<a href='" + url + pageNo + "'>다음</a>\n");
 		}
 		return pagebar.toString();
+	}
+
+//	페이지소스보기 하면 br추가되어있음
+	public static String convertLineFeedToBr(String str) {
+		return str.replaceAll("\\n", "<br/>");
+	}
+
+	public static String escapeXml(String str) {
+		return str .replaceAll("&", "&amp;")
+				   .replaceAll("<", "&lt;")
+				   .replaceAll(">", "&gt;");
+
 	}
 
 }

@@ -241,3 +241,276 @@ select count(*) from member where member_name like '%동%';
 select count(*) from member where gender like '%M%';
 
 --select count(*) from member where # like ?
+
+--게시판 | 첨부파일 테이블 1:N
+create table board (
+    no number,
+    title varchar2(500) not null,
+    writer varchar2(20), --로그인해야 작성가능함
+    content varchar2(4000) not null,
+    read_count number default 0,
+    reg_date date default sysdate,
+    constraint pk_board_no primary key(no),
+    constraint fk_board_writer foreign key(writer) references member(member_id) on delete set null
+-- member_id탈퇴시 null로 바꿔주는
+);
+create sequence seq_board_no;
+
+create table attachment(
+    no number,
+    board_no number not null, --어떤(몇번) 게시글의 첨부파일인지
+    original_filename varchar2(255) not null, --업로드한 파일명
+    renamed_filename varchar2(255) not null, --실제 저장된 파일명, 인코딩/보안 문제
+    reg_date date default sysdate,
+    constraint pk_attachment_no primary key(no),
+    constraint fk_attachment_board_no foreign key(board_no) references board(no) on delete cascade
+    -- 게시글 삭제시 첨부파일도 삭제한다
+);
+create sequence seq_attachment_no;
+
+    comment on column board.no is '게시글번호';
+    comment on column board.title is '게시글제목';
+    comment on column board.writer is '게시글작성자 아이디';
+    comment on column board.content is '게시글내용';
+    comment on column board.read_count is '조회수';
+    comment on column board.reg_date is '게시글작성일시';
+
+    comment on column attachment.no is '첨부파일번호(PK)';
+    comment on column attachment.board_no is '게시판글번호(FK)';
+    comment on column attachment.original_filename is '업로드한 첨부파일명';
+    comment on column attachment.renamed_filename is '서버에 저장된 첨부파일명';
+    comment on column attachment.reg_date is '첨부파일업로드일시';
+    
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 1','honggd','반갑습니다',to_date('18/02/10','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 2','qwerty','안녕하세요',to_date('18/02/12','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 3','admin','반갑습니다',to_date('18/02/13','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 4','honggd','안녕하세요',to_date('18/02/14','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 5','qwerty','반갑습니다',to_date('18/02/15','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 6','admin','안녕하세요',to_date('18/02/16','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 7','honggd','반갑습니다',to_date('18/02/17','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 8','qwerty','안녕하세요',to_date('18/02/18','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 9','admin','반갑습니다',to_date('18/02/19','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 10','honggd','안녕하세',to_date('18/02/20','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 11','qwerty','반갑습니다',to_date('18/03/11','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 12','admin','안녕하세',to_date('18/03/12','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 13','honggd','반갑습니다',to_date('18/03/13','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 14','qwerty','안녕하세',to_date('18/03/14','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 15','admin','반갑습니다',to_date('18/03/15','RR/MM/DD'),0);
+
+
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 16','honggd','안녕하세',to_date('18/03/16','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 17','qwerty','반갑습니다',to_date('18/03/17','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 18','admin','안녕하세',to_date('18/03/18','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 19','honggd','반갑습니다',to_date('18/03/19','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 20','qwerty','안녕하세',to_date('18/03/20','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 21','admin','반갑습니다',to_date('18/04/01','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 22','honggd','안녕하세',to_date('18/04/02','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 23','qwerty','반갑습니다',to_date('18/04/03','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 24','admin','안녕하세',to_date('18/04/04','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 25','honggd','반갑습니다',to_date('18/04/05','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 26','qwerty','안녕하세',to_date('18/04/06','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 27','admin','반갑습니다',to_date('18/04/07','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 28','honggd','안녕하세',to_date('18/04/08','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 29','qwerty','반갑습니다',to_date('18/04/09','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 30','admin','안녕하세',to_date('18/04/10','RR/MM/DD'),0);
+
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 31','honggd','반갑습니다',to_date('18/04/16','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 32','qwerty','안녕하세',to_date('18/04/17','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 33','admin','반갑습니다',to_date('18/04/18','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 34','honggd','안녕하세',to_date('18/04/19','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 35','qwerty','반갑습니다',to_date('18/04/20','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 36','admin','안녕하세',to_date('18/05/01','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 37','honggd','반갑습니다',to_date('18/05/02','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 38','qwerty','안녕하세',to_date('18/05/03','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 39','admin','반갑습니다',to_date('18/05/04','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 40','honggd','안녕하세',to_date('18/05/05','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 41','qwerty','반갑습니다',to_date('18/05/06','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 42','admin','안녕하세',to_date('18/05/07','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 43','honggd','반갑습니다',to_date('18/05/08','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 44','qwerty','안녕하세',to_date('18/05/09','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 45','admin','반갑습니다',to_date('18/05/10','RR/MM/DD'),0);
+
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 46','honggd','안녕하세',to_date('18/05/16','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 47','qwerty','반갑습니다',to_date('18/05/17','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 48','admin','안녕하세',to_date('18/05/18','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 49','honggd','반갑습니다',to_date('18/05/19','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 50','qwerty','안녕하세',to_date('18/05/20','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 51','admin','반갑습니다',to_date('18/05/01','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 52','honggd','안녕하세',to_date('18/06/02','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 53','qwerty','반갑습니다',to_date('18/06/03','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 54','admin','안녕하세',to_date('18/06/04','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 55','honggd','반갑습니다',to_date('18/06/05','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 56','qwerty','안녕하세',to_date('18/06/06','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 57','admin','반갑습니다',to_date('18/06/07','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 58','honggd','안녕하세',to_date('18/06/08','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 59','qwerty','반갑습니다',to_date('18/06/09','RR/MM/DD'),0);
+insert into web.board (no,title,writer,content,reg_date,read_count) values (seq_board_no.nextval,'안녕하세요, 게시판입니다 - 60','admin','안녕하세',to_date('18/06/10','RR/MM/DD'),0);
+
+insert into web.attachment(no, board_no, original_filename, renamed_filename)
+values(seq_attachment_no.nextval, 60, 'test.txt', '20211007_233014432_12345.txt');
+
+commit;
+select * from board order by no desc;
+select * from attachment order by no desc;
+
+-- 게시판 페이징쿼리
+select *
+from (
+    select row_number() over(order by no desc) rnum,
+    b.*,
+    (select count(*) from attachment where board_no = b.no) attach_count
+from 
+    board b
+) b
+where rnum between 1 and 5;
+
+-- 댓글 테이블 (대댓글까지만)
+create table board_comment (
+    no number, 
+    comment_level number default 1, -- 댓글 1, 대댓글 2
+    writer varchar2(15), -- 댓글작성자(멤버아이디)
+    content varchar2(2000),
+    board_no number, --게시글 넘버(모든 게시글은 특정 게시물에 소속됨)
+    comment_ref number, --대댓글인 경우, 댓글참조. 댓글 null, 대댓글 - 댓글no(pk)
+    reg_date date default sysdate,
+    constraint pk_board_comment_no primary key(no),
+    constraint fk_board_comment_writer foreign key(writer) references member(member_id) on delete set null,
+    constraint fk_board_comment_board_no foreign key(board_no) references board(no) on delete cascade,
+    constraint fk_board_comment_comment_ref foreign key(comment_ref) references board_comment(no) on delete cascade
+);
+create sequence seq_board_comment_no;
+
+comment on column board_comment.no is '게시판댓글번호';
+comment on column board_comment.comment_level is '게시판댓글 레벨';
+comment on column board_comment.writer is '게시판댓글 작성자';
+comment on column board_comment.content is '게시판댓글';
+comment on column board_comment.board_no is '참조원글번호';
+comment on column board_comment.comment_ref is '게시판댓글 참조번호';
+comment on column board_comment.reg_date is '게시판댓글 작성일';
+
+select * from board_comment order by no;
+select * from board order by no desc;
+
+-- 나의 최신글은 161번 <-에 대한 테스트댓글 달아보기
+insert into board_comment
+values (seq_board_comment_no.nextval, default, 'xodusdl00', '저도 한글을 사랑합니다', 161, null, default);
+
+insert into board_comment
+values (seq_board_comment_no.nextval, default, 'abcd', '좋네여', 161, null, default);
+
+insert into board_comment
+values (seq_board_comment_no.nextval, default, 'admin', '오오', 161, null, default);
+--insert into board_comment values (seq_board_comment_no.nextval, ?, ?, ?, ?, ?, default);
+
+
+-- 161번 게시글 테스트 대댓글
+insert into board_comment
+values(seq_board_comment_no.nextval, 2, 'honggd', '하하', 161, 3, default);
+
+insert into board_comment
+values(seq_board_comment_no.nextval, 2, 'qwerty', '영어도', 161, 3, default);
+
+insert into board_comment
+values(seq_board_comment_no.nextval, 2, 'honggd', '감사합니다', 161, 4, default);
+
+-- 계층형 쿼리
+-- 부모레코드와 자식레코드를 연결해서 조회하는 쿼리
+-- 댓글트리, 메뉴, 조직도, 가계도 표현에 적합함
+-- start with 최상위레코드 조건절(여러개일수있다)
+-- connect by 부모레코드(prior키워드)와 자식레코드의 관계설정
+select 
+    *
+from 
+    board_comment
+where 
+    board_no = 161
+start with 
+    comment_level = 1
+connect by
+    prior no = comment_ref
+order siblings by
+    no asc;
+-- select * from board_comment where board_no = ? start with comment_level = 1 connect by prior no = comment_ref order siblings by no asc
+
+
+-- kh.employee 조직도 
+select * from employee;
+
+select 
+    level, --계층형 쿼리에서만 사용가능 
+    emp_id,
+    lpad(' ', (level-1) * 5) || emp_name 조직도,
+    manager_id
+from 
+    employee
+start with 
+    emp_id = '200'
+connect by
+    manager_id = prior emp_id;
+    
+    commit;
+    
+-- 게시글 목록 조회(댓글개수 포함)
+select * 
+from ( 
+    select 
+        row_number() over(order by no desc) rnum, 
+        b.*, 
+        (select count(*) from attachment where board_no = b.no) attach_count,
+        (select count(*) from board_comment where board_no = b.no) comment_count
+        from 
+            board b
+        ) b 
+        where rnum between 1 and 5;
+        
+-- 사진게시판
+create table photo (
+    no number,  
+    writer varchar2(15),
+    content varchar2(4000),
+    original_filename varchar2(100),
+    renamed_filename varchar2(100),
+    read_count number default 0,
+    reg_date date default sysdate,
+    constraint pk_photo_no primary key (no),
+    constraint fk_photo_writer foreign key(writer) references member(member_id)
+);
+create sequence seq_photo_no;
+
+Insert into WEB.PHOTO (NO,WRITER,CONTENT,ORIGINAL_FILENAME,RENAMED_FILENAME,READ_COUNT,REG_DATE) values (SEQ_PHOTO_NO.NEXTVAL,'abcd','하와이 가는 하늘길~','adult-adventure-aircraft-443430.jpg','20220418_174158873_108.jpg',107,to_date('18-04-22','DD-MM-RR'));
+Insert into WEB.PHOTO (NO,WRITER,CONTENT,ORIGINAL_FILENAME,RENAMED_FILENAME,READ_COUNT,REG_DATE) values (SEQ_PHOTO_NO.NEXTVAL,'abcd','프랑스산 와인 시음회 :)','adult-alcohol-blur-290316.jpg','20220418_174412447_349.jpg',18,to_date('18-04-22','DD-MM-RR'));
+Insert into WEB.PHOTO (NO,WRITER,CONTENT,ORIGINAL_FILENAME,RENAMED_FILENAME,READ_COUNT,REG_DATE) values (SEQ_PHOTO_NO.NEXTVAL,'abcd','여행은 즐거워','adventure-albay-clouds-672358.jpg','20220418_174453770_556.jpg',99,to_date('18-04-22','DD-MM-RR'));
+Insert into WEB.PHOTO (NO,WRITER,CONTENT,ORIGINAL_FILENAME,RENAMED_FILENAME,READ_COUNT,REG_DATE) values (SEQ_PHOTO_NO.NEXTVAL,'abcd','여행은 즐거워','airplane-apartment-architecture-364245.jpg','20220418_174505657_4.jpg',12,to_date('18-04-22','DD-MM-RR'));
+Insert into WEB.PHOTO (NO,WRITER,CONTENT,ORIGINAL_FILENAME,RENAMED_FILENAME,READ_COUNT,REG_DATE) values (SEQ_PHOTO_NO.NEXTVAL,'abcd','여행은 즐거워','america-architecture-billboards-461903.jpg','20220418_174516697_101.jpg',192,to_date('18-04-22','DD-MM-RR'));
+Insert into WEB.PHOTO (NO,WRITER,CONTENT,ORIGINAL_FILENAME,RENAMED_FILENAME,READ_COUNT,REG_DATE) values (SEQ_PHOTO_NO.NEXTVAL,'abcd','여행은 즐거워','ancient-architecture-building-415980.jpg','20220418_174527327_327.jpg',82,to_date('18-04-22','DD-MM-RR'));
+Insert into WEB.PHOTO (NO,WRITER,CONTENT,ORIGINAL_FILENAME,RENAMED_FILENAME,READ_COUNT,REG_DATE) values (SEQ_PHOTO_NO.NEXTVAL,'abcd','여행은 즐거워','arch-architecture-art-332208.jpg','20220418_174539548_250.jpg',73,to_date('18-04-22','DD-MM-RR'));
+Insert into WEB.PHOTO (NO,WRITER,CONTENT,ORIGINAL_FILENAME,RENAMED_FILENAME,READ_COUNT,REG_DATE) values (SEQ_PHOTO_NO.NEXTVAL,'abcd','자나깨나 차조심, 트램조심','architecture-avenue-blur-258447.jpg','20220418_174601509_281.jpg',103,to_date('18-04-22','DD-MM-RR'));
+Insert into WEB.PHOTO (NO,WRITER,CONTENT,ORIGINAL_FILENAME,RENAMED_FILENAME,READ_COUNT,REG_DATE) values (SEQ_PHOTO_NO.NEXTVAL,'abcd','여행은 즐거워','architecture-background-buildings-698604.jpg','20220418_174616171_833.jpg',102,to_date('18-04-22','DD-MM-RR'));
+Insert into WEB.PHOTO (NO,WRITER,CONTENT,ORIGINAL_FILENAME,RENAMED_FILENAME,READ_COUNT,REG_DATE) values (SEQ_PHOTO_NO.NEXTVAL,'abcd','여행은 즐거워','architecture-barcelona-blue-sky-819764.jpg','20220418_174652399_241.jpg',to_date('18-04-22','DD-MM-RR'));
+Insert into WEB.PHOTO (NO,WRITER,CONTENT,ORIGINAL_FILENAME,RENAMED_FILENAME,READ_COUNT,REG_DATE) values (SEQ_PHOTO_NO.NEXTVAL,'abcd','여행은 즐거워','architecture-basilica-buildings-326709.jpg','20220418_174743637_226.jpg',88,to_date('18-04-22','DD-MM-RR'));
+Insert into WEB.PHOTO (NO,WRITER,CONTENT,ORIGINAL_FILENAME,RENAMED_FILENAME,READ_COUNT,REG_DATE) values (SEQ_PHOTO_NO.NEXTVAL,'abcd','여행은 즐거워','architecture-building-door-206767.jpg','20220418_174800692_837.jpg',234,to_date('18-04-22','DD-MM-RR'));
+Insert into WEB.PHOTO (NO,WRITER,CONTENT,ORIGINAL_FILENAME,RENAMED_FILENAME,READ_COUNT,REG_DATE) values (SEQ_PHOTO_NO.NEXTVAL,'abcd','여행은 즐거워','atmosphere-beautiful-cloudburst-531318.jpg','20220418_174814411_4.jpg',81,to_date('18-04-22','DD-MM-RR'));
+Insert into WEB.PHOTO (NO,WRITER,CONTENT,ORIGINAL_FILENAME,RENAMED_FILENAME,READ_COUNT,REG_DATE) values (SEQ_PHOTO_NO.NEXTVAL,'abcd','이과수이과수','back-beach-beautiful-670060.jpg','20220418_174839106_197.jpg',77,to_date('18-04-22','DD-MM-RR'));
+Insert into WEB.PHOTO (NO,WRITER,CONTENT,ORIGINAL_FILENAME,RENAMED_FILENAME,READ_COUNT,REG_DATE) values (SEQ_PHOTO_NO.NEXTVAL,'abcd','여행은 즐거워','bicycle-tour-bicycles-bicyclists-17729.jpg','20220418_174856071_779.jpg',222,to_date('18-04-22','DD-MM-RR'));
+Insert into WEB.PHOTO (NO,WRITER,CONTENT,ORIGINAL_FILENAME,RENAMED_FILENAME,READ_COUNT,REG_DATE) values (SEQ_PHOTO_NO.NEXTVAL,'abcd','여행은 즐거워','billboard-business-city-733778.jpg','20220418_174910053_722.jpg',204,to_date('18-04-22','DD-MM-RR'));
+Insert into WEB.PHOTO (NO,WRITER,CONTENT,ORIGINAL_FILENAME,RENAMED_FILENAME,READ_COUNT,REG_DATE) values (SEQ_PHOTO_NO.NEXTVAL,'abcd','여행은 즐거워','black-clouds-dark-420885.jpg','20220418_174924429_849.jpg',103,to_date('18-04-22','DD-MM-RR'));
+Insert into WEB.PHOTO (NO,WRITER,CONTENT,ORIGINAL_FILENAME,RENAMED_FILENAME,READ_COUNT,REG_DATE) values (SEQ_PHOTO_NO.NEXTVAL,'abcd','여행은 즐거워','boulders-clouds-daylight-464440.jpg','20220418_174941759_108.jpg',47,to_date('18-04-22','DD-MM-RR'));
+Insert into WEB.PHOTO (NO,WRITER,CONTENT,ORIGINAL_FILENAME,RENAMED_FILENAME,READ_COUNT,REG_DATE) values (SEQ_PHOTO_NO.NEXTVAL,'abcd','여행은 즐거워','capital-cathedral-city-6502.jpg','20220418_174957191_842.jpg',52,to_date('18-04-22','DD-MM-RR'));
+Insert into WEB.PHOTO (NO,WRITER,CONTENT,ORIGINAL_FILENAME,RENAMED_FILENAME,READ_COUNT,REG_DATE) values (SEQ_PHOTO_NO.NEXTVAL,'abcd','퐈이아아아아아','evening-fair-fire-65297.jpg','20220418_175019576_86.jpg',45,to_date('18-04-22','DD-MM-RR'));
+Insert into WEB.PHOTO (NO,WRITER,CONTENT,ORIGINAL_FILENAME,RENAMED_FILENAME,READ_COUNT,REG_DATE) values (SEQ_PHOTO_NO.NEXTVAL,'wxyz','소나무야','375px-Pinus_densiflora_Kumgangsan.jpg','20220418_125936088_36.jpg',23,to_date('18-04-22','DD-MM-RR'));
+
+commit;
+
+-- photo paging 쿼리
+select * 
+from (
+    select 
+        row_number() over(order by no desc) rnum,
+        p.*
+    from 
+        photo p
+        ) p
+    where
+        rnum between 6 and 10;
+
+-- select * from ( select row_number() over(order by no desc) rnum,p.* from photo p) p where rnum between ? and ?

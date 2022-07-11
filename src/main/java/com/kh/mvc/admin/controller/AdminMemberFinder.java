@@ -46,14 +46,17 @@ public class AdminMemberFinder extends HttpServlet {
 			System.out.println(param);
 			
 			// 2. 업무로직
-			// a. content 영역
+			// a. content 영역 여기랑
 			List<Member> list = memberService.findMemberLike(param);
 			System.out.println("list = " + list);
 			
-			// b. pagebar 영역
+			// b. pagebar 영역 여기 where절 같아야함
 			int totalContent = memberService.getTotalContentLike(param);
 			System.out.println("totalContent = " + totalContent);
+			
 			// /mvc/admin/memberFinder?searchType=gender&searchKeyword=M
+			
+			//get방식일때 가능
 			String url = request.getRequestURI() + "?searchType=" + searchType + "&searchKeyword=" + searchKeyword;
 			String pagebar = HelloMvcUtils.getPagebar(cPage, numPerPage, totalContent, url);
 			System.out.println("pagebar = " + pagebar);

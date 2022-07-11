@@ -34,8 +34,8 @@ public class CheckIdDuplicateServlet extends HttpServlet {
 		boolean available = member == null;
 		System.out.println("available = " + available);
 		// 4. 응답처리
-//		이래야 jsp에서 꺼내쓸 수 있음
-		request.setAttribute("available", available);
+
+		request.setAttribute("available", available); //이래야 jsp에서 꺼내쓸 수 있음
 		
 		request.getRequestDispatcher("/WEB-INF/views/member/checkIdDuplicate.jsp")
 			.forward(request, response);

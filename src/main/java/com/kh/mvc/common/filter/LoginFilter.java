@@ -25,7 +25,13 @@ import com.kh.mvc.member.model.dto.Member;
 	"/member/memberView", 
 	"/member/memberUpdate", 
 	"/member/memberDelete",
-	"/member/passwordUpdate",})
+	"/member/passwordUpdate",
+	"/board/boardEnroll",
+	"/board/boardUpdate",
+	"/board/boardDelete",
+	"/board/boardCommentEnroll",
+	"/chat/*"
+})
 public class LoginFilter implements Filter {
 
     /**
@@ -47,6 +53,7 @@ public class LoginFilter implements Filter {
 	 */
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		
+//		세션을 가져오기 위해 
 		HttpServletRequest httpReq = (HttpServletRequest) request; 
 		HttpServletResponse httpRes = (HttpServletResponse) response;
 		HttpSession session = httpReq.getSession();

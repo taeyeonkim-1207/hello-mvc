@@ -106,10 +106,10 @@ public class MemberDao {
 	 */
 	public int insertMember(Connection conn, Member member) {
 		PreparedStatement pstmt = null;
-		int result = 0;
+		int result = 0; //DML처리 결과를 담는다.
 		String sql = prop.getProperty("insertMember");
 		// insert into member values (?, ?, ?, default, ?, ?, ?, ?, ?, default, default)
-		try {
+		try { //물음표 채우기
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, member.getMemberId());
 			pstmt.setString(2, member.getPassword());
@@ -239,7 +239,7 @@ public class MemberDao {
 			pstmt = conn.prepareStatement(sql);
 			rset = pstmt.executeQuery();
 			while(rset.next())
-				totalContent = rset.getInt(1); //DB에서 인덱스는 1부터
+				totalContent = rset.getInt(1); //컬럼명or인덱스 써도됨 - DB에서 인덱스는 1부터
 		} catch (SQLException e) {
 			throw new MemberException("전체 회원수 조회 오류!",e);
 		} finally {
@@ -307,6 +307,27 @@ public class MemberDao {
 			close(pstmt);
 		}
 		return totalContent;
+	}
+
+
+	public int updateMemberRole(Connection conn, Member member) {
+		PreparedStatement pstmt = null;
+		int result = 0;
+		String sql = prop.getProperty("updateMemberRole");
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, member.getMemberRole().name());
+			pstmt.setString(2, member.getMemberId());
+			result = pstmt.executeUpdate();
+		
+		}catch(Exception e) {
+			throw new MemberException("회원권한정보 수정 오류", e);
+			
+		}finally {
+			close(pstmt);
+		}
+		return result;
 	}
 
 }

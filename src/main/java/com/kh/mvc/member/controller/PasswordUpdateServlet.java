@@ -23,6 +23,7 @@ public class PasswordUpdateServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+//	비밀번호 변경 페이지로 이동 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.getRequestDispatcher("/WEB-INF/views/member/passwordUpdate.jsp")
 			.forward(request, response);

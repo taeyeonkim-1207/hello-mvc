@@ -19,6 +19,9 @@ import com.kh.mvc.member.model.service.MemberService;
  * 항상 같음
  */
 @WebServlet("/member/login")
+//@WebServlet의 역할
+//web.xml에 클래스를 등록. /member/login 요청이 오면 밑에 클래스로 처리하게 해달라
+//특정 url과 특정 서블릿을 연결하는 설정을 등록(web.xml)
 public class MemberLoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private MemberService memberService = new MemberService();
@@ -76,7 +79,8 @@ public class MemberLoginServlet extends HttpServlet {
 			// 응답 302 redirect 전송.
 			// 브라우져에게 location으로 재요청을 명령.
 //			302면 /mvc/로 가라고 (location으로)요청을 보내는 것 
-			response.sendRedirect(request.getContextPath() + "/"); // /mvc/
+			String location = request.getHeader("Referer");
+			response.sendRedirect(location); // /mvc/
 		} catch (IOException e) {
 			e.printStackTrace(); //로깅
 			throw e; //tomcat에게 예외 던짐

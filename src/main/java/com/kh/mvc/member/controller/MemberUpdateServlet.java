@@ -67,6 +67,8 @@ public class MemberUpdateServlet extends HttpServlet {
 			}
 			
 			session.setAttribute("msg", msg);
+
+//			내가 가고싶은곳으로
 			response.sendRedirect(request.getContextPath() + "/member/memberView");
 		} catch (Exception e) {
 			e.printStackTrace();

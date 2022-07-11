@@ -17,6 +17,7 @@ import com.kh.mvc.member.model.service.MemberService;
 
 /**
  * Servlet implementation class AdminMemberListServlet
+ * 페이징시작
  */
 @WebServlet("/admin/memberList")
 public class AdminMemberListServlet extends HttpServlet {
@@ -54,6 +55,8 @@ public class AdminMemberListServlet extends HttpServlet {
 			// select count(*) from member
 			int totalContent = memberService.getTotalContent();
 			System.out.println("totalContent = " + totalContent);
+			
+			//url: 다음걸 요청할 주소 
 			String url = request.getRequestURI();
 			String pagebar = HelloMvcUtils.getPagebar(cPage, numPerPage, totalContent, url);
 			System.out.println("pagebar = " + pagebar);
